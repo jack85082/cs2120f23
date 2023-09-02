@@ -227,7 +227,14 @@ def square : Nat → Nat
 #eval glue_funs square double 5 --expected: 100
 /-
 The application order of square and double matters for any Nat greater than zero.
-Let x be the Nat argument. Applying double before square is equivalent evaluating
-the expression 2x^2. Applying square before doubke, meanwhile, is equivalent to
-evaluating (2x)^2 = 4x^2. The x values at which both orderings produce the same re
+Let x be the Nat argument. Applying double before square is equivalent to evaluating
+the expression 2x^2. Applying square before double, meanwhile, is equivalent to
+evaluating (2x)^2 = 4x^2. The x values at which both orderings produce the same result
+can be found by solving the following equation:
+4x^2 - 2x^2 = 0
+2x^2 = 0
+x^2 = 0
+x = 0
+Therefore, both orderings only yield the same result when the Nat argument is zero.
+QED
 -/
