@@ -52,7 +52,7 @@ as an argument and returns the natural number that
 is length of the given string. What is the type of
 the String.length function?
 
-Answer here:
+Answer here: String → Nat
 -/
 
 
@@ -72,6 +72,11 @@ similar Boolean operators, such as *xor* and *nor*.
 -/
 
 -- Write your code here
+def imp : Bool → Bool → Bool
+|true, true => true
+|true, false => false
+|false, true => true
+|false, false => true
 
 /-!
 ## Problem 3: Prove correctness by exhaustive testing
@@ -83,7 +88,10 @@ end of each #eval line, as we've done in class.
 -/
 
 -- Write your answers here:
-#eval _   -- etc
+#eval imp true true -- expected: true
+#eval imp true false -- expected: false
+#eval imp false true -- expected: true
+#eval imp false false -- expected: true
 
 /-!
 ## 4. Glue together two compatible functions
@@ -142,8 +150,7 @@ right, the following test cases should pass.
 -/
 
 -- Now complete the implementation of glue_funs'
-def glue_funs' : _
-| _ => _
+def glue_funs' (g : Nat → Bool) (f : String → Nat) (s : String) : Bool := g (f s)
 
 #eval glue_funs' isEven String.length "Hello"  -- false
 #eval glue_funs' isEven String.length "Hello!" -- true
@@ -188,8 +195,7 @@ of the type arguments are implicit and inferred.
 -/
 
 -- Implement glue_funs here
-def glue_funs : _
-| _ => _
+def glue_funs {α β γ : Type} (g : β → γ) (f : α → β) (a : α) : γ := g (f a)
 
 -- test cases
 #eval glue_funs isEven String.length "Hello"  -- false
@@ -209,8 +215,19 @@ as applying square after double?
 -/
 
 -- Copy the double and square functions here
+def double : Nat → Nat
+| n => 2 * n
+
+def square : Nat → Nat
+| n => n^2
 
 -- Write your tests here; include expected results
 
-#eval _
-#eval _
+#eval glue_funs double square 5 --expected: 50
+#eval glue_funs square double 5 --expected: 100
+/-
+The application order of square and double matters for any Nat greater than zero.
+Let x be the Nat argument. Applying double before square is equivalent evaluating
+the expression 2x^2. Applying square before doubke, meanwhile, is equivalent to
+evaluating (2x)^2 = 4x^2. The x values at which both orderings produce the same re
+-/
