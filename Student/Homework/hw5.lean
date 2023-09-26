@@ -73,11 +73,12 @@ We've now replaced each α → Empty with no α. We
 suggest that you go ahead and use *no* wherever
 doing so makes the logical meaning clearer. 
 -/
+
 def not_either_not_both { jam cheese } :
-  ((no jam) ⊕ (no cheese)) → 
+  ((jam → Empty)⊕ (no cheese)) → 
   (no (jam × cheese)) 
-| Sum.inl nojam => _
-| Sum.inr nocheese => _
+| Sum.inl nojam => fun ((j,c) : jam × cheese) => nojam j
+| Sum.inr nocheese => fun ((j,c) : jam × cheese) => nocheese c
 
 /-!
 ### #2: Not One or Not the Other Implies Not Both
@@ -91,8 +92,8 @@ names, *jam* and *cheese*.
 -/
 
 def demorgan1  {α β : Type} : ((α → Empty) ⊕ (β → Empty)) → (α × β → Empty)  
-| (Sum.inl noa) => _
-| (Sum.inr nob) => _
+| (Sum.inl noa) => fun ((a,b) : α × β) => noa a
+| (Sum.inr nob) => fun ((a,b) : α × β) => nob b
 
 /-!
 ### #3: Not Either Implies Not One And Not The Other
@@ -106,8 +107,7 @@ given *any* types, α and β,
 -/
 
 def demorgan2 {α β : Type} : (α ⊕ β → Empty) → ((α → Empty) × (β → Empty))
-| noaorb => _
-
+| noaorb => ((fun (a : α) => noaorb (Sum.inl a)),(fun (b : β) => noaorb (Sum.inr b)))
 
 /-!
 ### #4: Not One And Not The Other Implies Not One Or The Other 
@@ -119,7 +119,11 @@ Hint: You might want to use an explicit match expression
 in writing your solution.
 -/
 def demorgan3 {α β : Type} : ((α → Empty) × (β → Empty)) → ((α ⊕ β) → Empty)  
-| _ => _
+| (noa, nob) =>
+fun
+| Sum.inl a => noa a
+| Sum.inr b => nob b
+
 
 /-!
 ## PART 2
