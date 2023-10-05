@@ -25,6 +25,7 @@ inductive binary_op : Type
 | and
 | or
 | imp
+| iff
 
 inductive Expr : Type
 | var_exp (v : var)
@@ -54,11 +55,18 @@ def implies : Bool → Bool → Bool
 | true, false => false
 | _, _ => true
 
+def biconditional : Bool → Bool → Bool
+| true, true => true
+| true, false => false
+| false, true => false
+| false, false => true
+
 
 def eval_bin_op : binary_op → (Bool → Bool → Bool)
 | binary_op.and => and
 | binary_op.or => or
 | binary_op.imp => implies
+| binary_op.iff => biconditional
 
 def Interp := var → Bool  
 
@@ -250,6 +258,14 @@ def e0 := (¬J ∨ ¬C) ⇒ ¬(J ∧ C)
 
 -- YOU DO THE REST
 
+-- #2. ((no α) ⊕ (no β)) → (no (α × β)) 
+def e1 := (¬A ∨ ¬B) ⇒ ¬(A ∧ B)
+
+-- #3. (no (α ⊕ β)) → ((no α) × (no β))
+def e2 := ¬(A ∨ B) ⇒ (¬A ∧ ¬B)
+
+-- #4. ((no α) × (no β)) → (no (α ⊕ β)) 
+def e3 := (¬A ∧ ¬B) ⇒ ¬(A ∨ B)
 
 /-!
 ### #4. Implement Syntax and Semantics for Implies and Biimplication
@@ -258,6 +274,8 @@ Do the same for biimplication while you're at it. This is already done
 for *implies*. Your job is to do the same for bi-implication, which
 Lean does not implement natively. 
 -/
+
+-- Implemented bi-implication above ^
 
 /-!
 ### #5. Evaluate Propositions in Various Worlds
@@ -273,6 +291,15 @@ to evaluate to true under both the all_true and all_false interpretations.
 
 -- You do the rest
 
+#eval eval_expr e1 (λ _ => false) -- expect true
+#eval eval_expr e1 (λ _ => true)  -- expect true
+
+#eval eval_expr e2 (λ _ => false) -- expect true
+#eval eval_expr e2 (λ _ => true)  -- expect true
+
+#eval eval_expr e3 (λ _ => false) -- expect true
+#eval eval_expr e3 (λ _ => true)  -- expect true
+
 /-!
 ### #6. Evaluate the Expressions Under Some Other Interpretation
 
@@ -287,4 +314,16 @@ use wildcard matching to handle all remaining cases.
 
 -- Answer here
 
+def myInterpretationFunc : var → Bool
+| var.mk 0 => true    --b
+| var.mk 1 => false   --j
+| var.mk 2 => true    --c
+| var.mk 3 => false   --a
+| _ => false
 
+def myInterpretation : Interp := myInterpretationFunc
+
+#eval eval_expr e0 myInterpretation -- expect true
+#eval eval_expr e1 myInterpretation -- expect true
+#eval eval_expr e2 myInterpretation -- expect true
+#eval eval_expr e3 myInterpretation -- expect true
