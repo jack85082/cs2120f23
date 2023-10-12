@@ -160,6 +160,7 @@ inductive binary_op : Type
 | and
 | or
 | imp
+| iff
 inductive Expr : Type
 | var_exp (v : var)
 | un_exp (op : unary_op) (e : Expr)
@@ -175,10 +176,16 @@ def eval_un_op : unary_op → (Bool → Bool)
 def implies : Bool → Bool → Bool
 | true, false => false
 | _, _ => true
+def biconditional : Bool → Bool → Bool
+| true, true => true
+| true, false => false
+| false, true => false
+| false, false => true
 def eval_bin_op : binary_op → (Bool → Bool → Bool)
 | binary_op.and => and
 | binary_op.or => or
 | binary_op.imp => implies
+| binary_op.iff => biconditional
 def Interp := var → Bool  
 def eval_expr : Expr → Interp → Bool 
 | (Expr.var_exp v),        i => i v
@@ -679,6 +686,23 @@ cases to demonstrate your results.
 -/
 
 -- Here
+def is_sat (e : Expr) : Bool :=
+outputs_to_sat (truth_table_outputs e)
+where outputs_to_sat : List Bool → Bool --ors all the outputs together so that if at least one is true is_sat returns true
+| [] => false
+| h::t => h ∨ (outputs_to_sat t)
+
+def is_unsat (e : Expr) : Bool :=
+outputs_to_unsat (truth_table_outputs e)
+where outputs_to_unsat : List Bool → Bool --ands the negations of the outputs together so that is_unsat returns true only if all outputs are false
+| [] => true
+| h::t => ¬h ∧ (outputs_to_unsat t)
+
+def is_valid (e : Expr) : Bool :=
+outputs_to_valid (truth_table_outputs e)
+where outputs_to_valid : List Bool → Bool --ands all the outputs together so that is_valid only returns true if all outputs are true
+| [] => true
+| h::t => h ∧ (outputs_to_valid t)
 
 
 -- A few tests
@@ -693,5 +717,16 @@ cases to demonstrate your results.
 
 -- Test cases
 
+def a := var.mk 0
+def o := var.mk 1
+def b := var.mk 2
+def c := var.mk 3
 
+def A := {a}     
+def O := {o}
+def B := {b}
+def C := {c}
+
+--The expression developed in #4 of homework 7, part 2 is indeed valid 
+#eval is_valid ((O ∨ A) ∧ (B ∨ C) ⇔ (A ∧ B) ∨ (A ∧ C) ∨ (O ∧ B) ∨ (O ∧ C)) --expect true
 

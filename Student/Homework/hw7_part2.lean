@@ -82,6 +82,28 @@ propositional logic *iff/equivalence* (↔) operator.
 Note that Lean does not natively define the *iff*
 Boolean operator. 
 -/
+--This was already done in the second part of Homework 6, specifically in lecture_12.lean.
+--I also made these changes in lecture_13.lean for problem #5.
+--The following changes were made:
+--add iff as a binary operator
+inductive binary_op : Type
+| and
+| or
+| imp
+| iff
+--add a function definition for binconditional
+def biconditional : Bool → Bool → Bool
+| true, true => true
+| true, false => false
+| false, true => false
+| false, false => true
+--add iff to eval_bin_op
+def eval_bin_op : binary_op → (Bool → Bool → Bool)
+| binary_op.and => and
+| binary_op.or => or
+| binary_op.imp => implies
+| binary_op.iff => biconditional
+--That's it! The symbol/notation for iff was already configured.
 
 /-!
 Using our syntax for propositional logic, and the
@@ -98,6 +120,8 @@ of propositional logic. Just write the expression
 here using the notation we've defined.
 -/
 
+--Answer: (O ∨ A) ∧ (B ∨ C) ⇔ (A ∧ B) ∨ (A ∧ C) ∨ (O ∧ B) ∨ (O ∧ C)
+
 /-!
 ## #5 Propositional Logic Validity
 At the end of your updated Homework #7 file, use our
@@ -105,3 +129,5 @@ validity checking function to check your expression
 for validity, in the expectation that the checker will
 determine that the expression is in fact valid. 
 -/
+--See the bottom of the lecture_13.lean file submitted along with this one.
+--The expression was indeed found to be valid.
