@@ -1,0 +1,19 @@
+an equivalence relation is one that is:
+1. reflexive    a = a
+2. symmmetric   a = b -> b = a
+3. transitive   a = b and b = c -> a = c
+It may be divided into equivalence partitions consisting of those values
+related to each other. Equivalence partitions are disjoint since they 
+have no elements in common.
+
+Proof by induction only proves univeral generalizations, e.g. for all n, P n.
+
+We have a base proof: P 0
+and an inductive proof: for all n : Nat, P n -> P (n + 1)
+
+induction axiom for natural numbers
+
+For all (P : Nat -> Prop), P 0 -> For all n' : Nat, (P n' -> P (n' + 1))
+-> for all n : Nat, P n
+
+
