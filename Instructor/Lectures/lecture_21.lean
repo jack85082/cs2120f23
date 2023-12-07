@@ -1,5 +1,5 @@
-import Mathlib.Data.Set.Basic
-import Mathlib.Logic.Relation
+-- import Mathlib.Data.Set.Basic
+-- import Mathlib.Logic.Relation
 
 
 /-!
@@ -417,9 +417,15 @@ reflects this fact, with ∩ in the language of set theory reducing to ∧ in
 the language of predicate logic. The following Lean codeillustrate the point.
 -/
 
+#reduce Set.inter
+-- fun s₁ s₂ a => s₁ a ∧ s₂ a
+
+
+
 variable (α : Type) (s t : Set α)
 #check s ∩ t    -- the intersection of sets is a set
 #reduce s ∩ t   -- its membership predicate is formed using ∧
+
 
 /-!
 As another example, the intersection of our even (ev) and small sets,
@@ -514,6 +520,11 @@ As an example, we now define even_or_small_set as the union
 of the even_set and small_set.
 -/
 
+#reduce @Set.union
+-- fun {α} s₁ s₂ a => s₁ a ∨ s₂ a
+
+
+
 def even_or_small_set := ev_set ∪ small_set
 
 /-!
@@ -549,9 +560,12 @@ predicates, the complement operation reduces to the negation of
 membership predicates.
 -/
 
+#reduce sᶜ    -- fun x => x ∈ s → False means fun x => x ∉ s
+-- fun x => x ∈ s → False
+
 variable (s : Set Nat)
 #check sᶜ     -- Standard notation for complement of set s
-#reduce sᶜ    -- fun x => x ∈ s → False means fun x => x ∉ s
+
 
 /-!
 Exercises:
@@ -580,28 +594,36 @@ example : 6 ∈ ev_set \ small_set := ⟨ rfl, λ h => nomatch h ⟩
 -/
 
 #reduce @Set.Subset
+-- fun {α} s₁ s₂ => ∀ ⦃a : α⦄, a ∈ s₁ → s₂ a
 
 /-!
 ### Powerset
 -/
 
 #reduce @Set.powerset
+-- fun {α} s t => ∀ ⦃a : α⦄, a ∈ t → s a
 
-variable (s t : Set Nat)
-#reduce s ∩ t
-#reduce sᶜ
+
 
 /-!
-## Summary of Set Theory and Logical Underpinnings
+## Set Theory and Logical Underpinnings
 
-| Set Theory  | Set Theory Definitions    | Predicate Logic                   |
-|-------------|---------------------------|-----------------------------------|
-| set α       | axioms of set theory      | predicate (α → Prop in Lean)      |
-| s ∩ t       | { a \| a ∈ s ∧ a ∈ t }     | λ a => s a ∧ t a                  |
-| s ∪ t       | { a \| a ∈ s ∨ a ∈ t }     | λ a => s a ∨ t a                  |
-| sᶜ          | { a \| a ∉ s }             | λ a => s a → False                |
-| s \ t       | { a \| a ∈ s ∧ a ∉ t }     | λ a => s a ∧ (t a → False)        |
-| s ⊆ t       | ∀ a, a ∈ s → a ∈ t  ...   | λ a => s a → t a ...              |
-| s ⊊ t       | ... ∧ ∃ w, w ∈ t ∧ w ∉ s  | ... ∧ ∃ w, (t w) ∧ (s w → False)  |
-| 𝒫 s         | { b : Set s \| b ⊆ univ }  | λ b => b ⊆ univ                   |
+| Set Theory Concept | Set Theory Definition    | Constructive Logic Reduction (Lean) |
+|--------------------|--------------------------|-------------------------------------|
+| set α              | axioms of set theory     | predicate (α → Prop in Lean)        |
+| s ∩ t              | { a \| a ∈ s ∧ a ∈ t }   | λ a => s a ∧ t a                    |
+| s ∪ t              | { a \| a ∈ s ∨ a ∈ t }   | λ a => s a ∨ t a                    |
+| sᶜ                 | { a \| a ∉ s }           | λ a => s a → False                  |
+| s \ t              | { a \| a ∈ s ∧ a ∉ t }   | λ a => s a ∧ (t a → False)          |
+| s ⊆ t              | ∀ a, a ∈ s → a ∈ t  ...  | λ a => s a → t a ...                |
+| s ⊊ t              | ... ∧ ∃ w, w ∈ t ∧ w ∉ s | ... ∧ ∃ w, (t w) ∧ (s w → False)    |
+| 𝒫 s                | { t \| t ⊆ s }           | λ t => ∀ ⦃a : ℕ⦄, t a → s a         |
+
+In set theory, you have an example of one mathematical abstraction with its own
+objects (sets) and operations (as in the table). Here we  have even more: how set
+theory language reduces to the language of predicate logic in Lean. You should know
+not only the meanings of the abstract operations, such as intersection, but how each
+is defined in terms of predicate logic. You will have to translate back and forth,
+because you have to understand set theory propositions at the logical level level
+to see how to construct proofs of them.
 -/
