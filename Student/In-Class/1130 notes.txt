@@ -15,5 +15,8 @@ induction axiom for natural numbers
 
 For all (P : Nat -> Prop), P 0 -> For all n' : Nat, (P n' -> P (n' + 1))
 -> for all n : Nat, P n
+Nat.ind in Lean
+
+Can perform proofs of induction for other types like lists, start with [] as base case
 
 
