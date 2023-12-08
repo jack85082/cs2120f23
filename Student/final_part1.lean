@@ -459,9 +459,10 @@ write separate tactic applications indented on separate lines.
 -/
 
 theorem eq_rel_trans {α : Type} {a b c : α} :
-_               -- fill with proposition: equality is transitive
-| _, _ => by
-  _             -- fill in your proof of it here
+a = b → b = c → a = c               -- fill with proposition: equality is transitive
+| a_equals_b, b_equals_c => by
+  rw [a_equals_b]              -- fill in your proof of it here
+  assumption
 
 /-!
 ## Exam Question #3
@@ -476,3 +477,11 @@ is not.
 -/
 
 -- Your answer here
+
+inductive successor : Nat → Nat → Prop
+| succ' (a sa : Nat) : sa = Nat.succ a → successor a sa
+
+open successor
+
+example : successor 2 3 := succ' 2 3 rfl
+example : ¬ successor 2 4 := λ h => nomatch h
